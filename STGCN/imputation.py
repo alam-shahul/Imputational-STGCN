@@ -67,9 +67,10 @@ class ImputationalSTGCN(nn.Module):
             
         if incomplete_subset is None:
             out_incomplete = out_complete
-            incomplete_attn_output, incomplete_attn_weights = complete_attn_output, complete_attn_weights
+            incomplete_attn_weights = complete_attn_weights
         else:
-            batch_size_incomplete, num_nodes_incomplete, num_timesteps, num_features = X.shape
+            # TODO: pad if necessary
+            batch_size_incomplete, num_nodes_incomplete, num_timesteps, num_features = incomplete_subset.shape
             flattened_incomplete_subset = incomplete_subset.view(batch_size_incomplete, num_nodes_incomplete, num_features * num_timesteps)
             incomplete_query = flattened_incomplete_subset # @ self.query_weights
             _, incomplete_attn_weights = self.weight_mapper(incomplete_query, complete_key, complete_key)
